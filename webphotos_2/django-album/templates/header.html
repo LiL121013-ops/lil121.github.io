@@ -1,0 +1,118 @@
+<!-- 导航栏 -->
+<nav class="navbar navbar-expand navbar-dark bg-dark">
+    <div class="container">
+        <!-- 标志 -->
+        <a 
+            class="navbar-brand" 
+            href="#"
+            data-bs-toggle="modal" 
+            data-bs-target="#login"
+        >
+            <h1>
+                个人账户
+
+            </h1>
+            <h2>网络相册</h2>
+        </a>
+        <!-- 登录模态窗 -->
+        {% if user.is_superuser %}
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                <h2>
+                    <a 
+                    class="nav-link active"
+                    href="#"
+                    data-bs-toggle="modal"
+                    data-bs-target="#upload"
+                    >
+                        +
+                    </a>
+                </h2>
+                </li>
+            </ul>
+        {% endif %}
+    </div>
+</nav>
+
+<!-- 登出 -->
+{% if user.is_superuser %}
+<div class="modal fade" id="login">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p>确认退出账号吗？</p>
+                <form action="{% url 'home' %}" method="post">{% csrf_token %}
+                    <input type="text" id="isLogout" name="isLogout" value="True" hidden>
+                    <button type="submit" class="btn btn-danger">Logout</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="upload">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <h5 class="modal-title">上传图片</h5>
+                <form action="{% url 'photo:upload' %}"
+                method="post"
+                enctype="multipart/form-data"
+                >
+                    {% csrf_token %}
+                    <div class="col py-2">
+                        <input
+                            class="form-control" 
+                            type="file"
+                            id="images" 
+                            name="images" 
+                            multiple="multiple"
+                            accept="image/*"
+                        >
+                    </div>
+                    <button type="submit" class="btn btn-primary">提交</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 登录 -->
+{% else %}
+<div class="modal fade" id="login">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <form action="{% url 'home' %}" method="post">{% csrf_token %}
+                    <div class="mb-3">
+                        <label for="username" class="form-label">账号</label>
+                        <input type="text" class="form-control" id="username" name="username">
+                    </div>
+                    <div class="mb-3">
+                        <label for="pwd" class="form-label">密码</label>
+                        <input type="password" class="form-control" id="pwd" name="password">
+                        <!-- 添加一个切换按钮 -->
+                        <input type="checkbox" onclick="showPassword()"> 显示密码
+                        <div id="emailHelp" class="form-text">
+                            我们绝不会与其他人分享您的密码，也请您不要将您的密码告诉任何人
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Login</button>
+                  </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- 添加JavaScript函数 -->
+<script>
+function showPassword() {
+    var x = document.getElementById("pwd");
+    if (x.type === "password") {
+        x.type = "text";
+    } else {
+        x.type = "password";
+    }
+}
+</script>
